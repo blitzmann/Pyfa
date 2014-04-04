@@ -269,10 +269,13 @@ class PFNotebook(wx.Panel):
         self.tabsContainer.Refresh()
 
     def OnSize(self, event):
+        # freeze / thaw to prevent icon flicker
         w,h= self.GetSize()
         self.tabsContainer.SetSize((w, -1))
+        self.Freeze()
         self.tabsContainer.UpdateSize()
         self.tabsContainer.Refresh()
+        self.Thaw()
         self.Layout()
         if self.activePage:
             self.ShowActive()
