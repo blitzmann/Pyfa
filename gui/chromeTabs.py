@@ -83,12 +83,13 @@ class PFNotebook(wx.Panel):
 
         mainSizer = wx.BoxSizer( wx.VERTICAL )
 
-        tabsSizer = wx.BoxSizer( wx.VERTICAL )
-
+        self.tabsSizer = wx.BoxSizer( wx.HORIZONTAL ) # sizer to hold tab area
+        tabsContent = wx.BoxSizer( wx.VERTICAL ) # sizer to hold actual tabs
         self.tabsContainer = PFTabsContainer(self, canAdd = canAdd)
-        tabsSizer.Add( self.tabsContainer, 0, wx.EXPAND )
+        tabsContent.Add( self.tabsContainer, 0, wx.EXPAND )
+        self.tabsSizer.Add( tabsContent, 1, wx.EXPAND, 5 )
 
-        mainSizer.Add( tabsSizer, 0, wx.EXPAND, 5 )
+        mainSizer.Add( self.tabsSizer, 0, wx.EXPAND, 5 )
 
         contentSizer = wx.BoxSizer( wx.VERTICAL )
         if 'wxMSW' in wx.PlatformInfo:
@@ -273,7 +274,6 @@ class PFNotebook(wx.Panel):
         self.tabsContainer.UpdateSize()
         self.tabsContainer.Refresh()
         self.Layout()
-
         if self.activePage:
             self.ShowActive()
         event.Skip()
@@ -965,7 +965,6 @@ class PFTabsContainer(wx.Panel):
                 self.Refresh()
 
     def OnPaint(self, event):
-
         if "wxGTK" in wx.PlatformInfo:
             mdc = wx.AutoBufferedPaintDC(self)
 

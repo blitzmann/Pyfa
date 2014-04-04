@@ -31,6 +31,7 @@ from gui.builtinViewColumns.state import State
 from gui import bitmapLoader
 import gui.builtinViews.emptyView
 from gui.utils.exportHtml import exportHtml
+import wx.lib.platebtn as platebtn
 
 import gui.globalEvents as GE
 
@@ -41,6 +42,11 @@ class FitSpawner(gui.multiSwitch.TabSpawner):
         self.mainFrame = mainFrame = gui.mainFrame.MainFrame.getInstance()
         mainFrame.Bind(gui.shipBrowser.EVT_FIT_SELECTED, self.fitSelected)
         self.multiSwitch.tabsContainer.handleDrag = self.handleDrag
+        # this flickers on fast resize event - fix
+        test = bitmapLoader.getImage("info", "icons")
+        self.pbutton = platebtn.PlateButton(multiSwitch, wx.ID_ANY, bmp = wx.BitmapFromImage(test))
+        self.multiSwitch.tabsSizer.Add( self.pbutton, 0, wx.EXPAND, 5 )
+        #self.multiSwitch.Layout()
 
     def fitSelected(self, event):
         count = -1
