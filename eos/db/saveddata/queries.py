@@ -20,6 +20,7 @@
 from eos.db.util import processEager, processWhere
 from eos.db import saveddata_session, sd_lock
 from eos.types import User, Character, Fit, Price, DamagePattern, Fleet, MiscData, Wing, Squad, Tag
+from eos.db.saveddata.fit import fit_tags
 from eos.db.saveddata.fleet import squadmembers_table
 from sqlalchemy.sql import and_
 import eos.config
@@ -253,8 +254,6 @@ def getFitsWithTag(tagID, ownerID=None, where=None, eager=None):
     Get all the fits tag with tagID
     If no user is passed, do this for all users.
     """
-    # @todo: fix this
-    return []
     if isinstance(tagID, int):
         if ownerID is not None and not isinstance(ownerID, int):
             raise TypeError("OwnerID must be integer")
@@ -267,7 +266,10 @@ def getFitsWithTag(tagID, ownerID=None, where=None, eager=None):
         filter = processWhere(filter, where)
         eager = processEager(eager)
         with sd_lock:
-            fits = saveddata_session.query(Fit).options(*eager).filter(filter).all()
+            fits = (saveddata_session.query(Fit)
+                .join(fit_tags).filter(fit_tags.c.tagID == tagID)
+                .options(*eager).filter(filter)
+                ).all()
     else:
         raise TypeError("TagID must be integer")
     return fits
