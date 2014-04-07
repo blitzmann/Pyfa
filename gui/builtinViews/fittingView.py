@@ -42,16 +42,30 @@ class FitSpawner(gui.multiSwitch.TabSpawner):
         self.mainFrame = mainFrame = gui.mainFrame.MainFrame.getInstance()
         mainFrame.Bind(gui.shipBrowser.EVT_FIT_SELECTED, self.fitSelected)
         self.multiSwitch.tabsContainer.handleDrag = self.handleDrag
-        # this flickers on fast resize event - fix
-        test = bitmapLoader.getImage("info", "icons")
-        self.pbutton = platebtn.PlateButton(multiSwitch, wx.ID_ANY, bmp = wx.BitmapFromImage(test))
-        self.multiSwitch.tabsSizer.Add( self.pbutton, 0, wx.EXPAND, 5 )
-        #self.multiSwitch.Layout()
+
+        # it would be best to use pyfa's toolbar class, but that required additional work and this is quick and easy
+        icon = bitmapLoader.getBitmap("info", "icons")
+        self.multiSwitch.infoButton = platebtn.PlateButton(multiSwitch, wx.ID_ANY, bmp = icon)
+        self.multiSwitch.infoButton.SetPressColor( self.multiSwitch.GetBackgroundColour())
+        self.multiSwitch.infoButton.Bind(wx.EVT_LEFT_DOWN, self.clickInfo)
+        self.multiSwitch.infoButton.Bind(wx.EVT_LEFT_DCLICK, self.clickInfo)
+
+        self.multiSwitch.tabsSizer.Add( self.multiSwitch.infoButton, 0 )
+        self.multiSwitch.Refresh()
+
+    def clickInfo(self, event):
+        page = self.multiSwitch.GetCurrentPage()
+        wx.PostEvent(self.mainFrame.shipBrowser, gui.shipBrowser.Stage5Selected(fitID=page.activeFitID))
 
     def fitSelected(self, event):
+        print "fittingView.fitSelected"
+        '''
+        Fit selected = a new fit is opened, not one thats already opened and is changed too
+        '''
         count = -1
         if self.multiSwitch.GetPageCount() == 0:
             self.multiSwitch.AddPage()
+        # if fit is already open, select it
         for index, page in enumerate(self.multiSwitch.pages):
             try:
                 if page.activeFitID == event.fitID:
@@ -195,6 +209,12 @@ class FittingView(d.Display):
         d.Display.Destroy(self)
 
     def pageChanged(self, event):
+        # if we are displaying info stage, switch to new ship info.
+        stage = self.mainFrame.shipBrowser._activeStage
+        if stage == 5:
+            print "Switch"
+            wx.PostEvent(self.mainFrame.shipBrowser, gui.shipBrowser.Stage5Selected(fitID=self.getActiveFit()))
+
         if self.parent.IsActive(self):
             fitID = self.getActiveFit()
             sFit = service.Fit.getInstance()
