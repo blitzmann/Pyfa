@@ -41,6 +41,7 @@ from gui.marketBrowser import MarketBrowser
 from gui.multiSwitch import MultiSwitch
 from gui.statsPane import StatsPane
 from gui.shipBrowser import ShipBrowser, FitSelected
+from gui.tagBrowser import TagBrowser
 from gui.characterEditor import CharacterEditor
 from gui.characterSelection import CharacterSelection
 from gui.patternEditor import DmgPatternEditorDlg
@@ -110,12 +111,16 @@ class MainFrame(wx.Frame):
 
         marketImg = bitmapLoader.getImage("market_small", "icons")
         shipBrowserImg = bitmapLoader.getImage("ship_small", "icons")
+        tagsImg = bitmapLoader.getImage("tag_small", "icons")
 
         self.marketBrowser = MarketBrowser(self.notebookBrowsers)
         self.notebookBrowsers.AddPage(self.marketBrowser, "Market", tabImage = marketImg, showClose = False)
 
         self.shipBrowser = ShipBrowser(self.notebookBrowsers)
         self.notebookBrowsers.AddPage(self.shipBrowser, "Ships", tabImage = shipBrowserImg, showClose = False)
+
+        self.tagBrowser = TagBrowser(self.notebookBrowsers)
+        self.notebookBrowsers.AddPage(self.tagBrowser, "Tags", tabImage = tagsImg, showClose = False)
 
         #=======================================================================
         # DISABLED FOR RC2 RELEASE

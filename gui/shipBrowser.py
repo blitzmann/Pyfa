@@ -834,7 +834,10 @@ class ShipBrowser(wx.Panel):
         self.raceselect.RebuildRaces(self.RACE_ORDER)
 
     def stage5(self, event):
-        print "stage5() in browser"
+        '''
+        Stage 5 is the fit description, listing various metadata about the ship
+        '''
+
         self.lpane.ShowLoading(False)
 
         fitID = event.fitID
@@ -850,12 +853,9 @@ class ShipBrowser(wx.Panel):
 
         self.navpanel.ShowNewFitButton(True)
         self.navpanel.ShowSwitchEmptyGroupsButton(False)
-        '''
-        self._stage3ShipName = shipName
-        self._stage3Data = shipID
-        '''
 
-        self.lpane.AddWidget(FitDescription(self.lpane, fitID, (False, False, False, False)))
+        self.lpane.AddWidget(FitItem(self.lpane, fitID, ("Test Name", "lol name", True, 4444),11393))
+        self.lpane.AddWidget(FitInfo(self.lpane, fitID, (False, False, False, False)))
 
         self.lpane.RefreshList()
         self.lpane.Thaw()
@@ -994,7 +994,7 @@ class CategoryItem(SFItem.SFBrowserItem):
 
 
         self.catx = self.shipBmpx + self.shipBmp.GetWidth() + self.padding
-        print self.catx
+        #print self.catx
         self.caty = (rect.height - htext) / 2
 
     def DrawItem(self, mdc):
@@ -1653,8 +1653,7 @@ class FitItem(SFItem.SFBrowserItem):
             self.RestoreEditButton()
         else:
             activeFitID = self.mainFrame.getActiveFit()
-            print "select stage 5, active fit"
-            wx.PostEvent(self.shipBrowser,Stage5Selected(fitID=self.fitID, back = -1 if self.shipBrowser.GetActiveStage() == 4 else 0))
+            #wx.PostEvent(self.shipBrowser,Stage5Selected(fitID=self.fitID, back = -1 if self.shipBrowser.GetActiveStage() == 4 else 0))
             if activeFitID != self.fitID:
                 self.selectFit()
 
@@ -1838,18 +1837,17 @@ class FitItem(SFItem.SFBrowserItem):
         self.bkBitmap.eFactor = eFactor
         self.bkBitmap.mFactor = mFactor
 
-class FitDescription(wx.Panel):
-    def __init__(self, parent, fitID=None, shipFittingInfo=("Test", "cnc's avatar", 0, 0 ), shipID = None, itemData=None,
+class FitInfo(wx.Panel):
+    def __init__(self, parent, fitID=None, shipFittingInfo=(u"Test", u"cnc's avatar", 0, 0 ), shipID = 11393, itemData=None,
                  id=wx.ID_ANY, pos=wx.DefaultPosition,
                  size=(0, 40), style=0):
 
 
-        wx.Panel.__init__ (self, parent, size = size)
+        #SFItem.SFBrowserItem.__init__ (self, parent, size = size)
+        wx.Panel.__init__ (self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.Size(500, 300), style=wx.TAB_TRAVERSAL)
 
         print "FitDesc"
-        self.animCount = 0
-        self.selectedDelta = 0
-
+        self.sFit = service.Fit.getInstance()
         self.mainFrame = gui.mainFrame.MainFrame.getInstance()
 
         self._itemData = itemData
@@ -1863,11 +1861,18 @@ class FitDescription(wx.Panel):
         self.shipBmp = None
 
         self.deleted = False
+        self.animCount=0
 
-        box = wx.BoxSizer(wx.VERTICAL)
+        mainSizer = wx.BoxSizer(wx.VERTICAL)
 
-        m_text = wx.StaticText(self, -1, "Hello World!")
-        box.Add(m_text, 0, wx.ALL, 10)
-        self.SetSizer(box)
-        self.Layout()
+        headSizer = wx.BoxSizer(wx.HORIZONTAL)
+        #self.m_bitmap1 = wx.StaticBitmap( self, wx.ID_ANY, self.dropShadowBitmap, wx.DefaultPosition, wx.DefaultSize, 0 )
 
+        #headSizer.Add( self.m_bitmap1, 0, wx.ALL, 5 )
+        #mainSizer.AddSpacer( ( 0, 20), 1, wx.EXPAND, 5 )
+        self.m_staticText1 = wx.StaticText( self, wx.ID_ANY, u"SHIP TITLE", wx.DefaultPosition, wx.DefaultSize, wx.ALIGN_CENTRE )
+        self.m_staticText1.Wrap( -1 )
+        headSizer.Add( self.m_staticText1, 1, wx.ALL, 5 )
+        mainSizer.Add(headSizer, 0)
+        self.SetSizer(mainSizer)
+        #self.Layout()
