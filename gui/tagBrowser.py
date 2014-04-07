@@ -293,9 +293,7 @@ class TagBrowser(wx.Panel):
 
         if len(fitList) == 0:
             # show message about adding fits to this tag
-            stage,data = self.browseHist.pop()
             self.lpane.Thaw()
-            self.navpanel.gotoStage(stage,data)
             return
 
         self.navpanel.ShowNewTagButton(False)
