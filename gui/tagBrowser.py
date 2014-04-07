@@ -194,6 +194,10 @@ class TagBrowser(wx.Panel):
         wx.Panel.__init__ (self, parent,style = 0)
         self.mainFrame = gui.mainFrame.MainFrame.getInstance()
 
+        # needed to use shipBrowsers FitItem widget
+        # effectively a dummy variable that doesn't do anything in TagBrowser
+        self.fitIDMustEditName = -1
+
         self.tagList=[]
         self.racesFilter = {}
 
@@ -266,7 +270,15 @@ class TagBrowser(wx.Panel):
         self.lpane.Freeze()
         self.lpane.RemoveAllChildren()
 
+        self.navpanel.ShowNewTagButton(True)
+
         self.tagList = list(eos.db.getTagList())
+
+        if len(self.tagList) == 0:
+            self.lpane.AddWidget(SBrowser.PFStaticText(self.lpane, label = u"You have not created any tags. Click the New Tag button in the navigation bar."))
+            self.lpane.Thaw()
+            return
+
         self.tagList.sort(key=lambda tag: tag.name)
 
         # add category to browser
@@ -283,25 +295,24 @@ class TagBrowser(wx.Panel):
         self.lpane.ShowLoading(False)
 
         tagID = event.tagID
-
         sFit = service.Fit.getInstance()
-        sMarket = service.Market.getInstance()
 
         self.lpane.Freeze()
         self.lpane.RemoveAllChildren()
         fitList = sFit.getFitsWithTag(tagID)
 
+        self.navpanel.ShowNewTagButton(False)
+
         if len(fitList) == 0:
             # show message about adding fits to this tag
+            self.lpane.AddWidget(SBrowser.PFStaticText(self.lpane, label = u"No fits available for this tag. You can tag fits by using the Show Info icon."))
             self.lpane.Thaw()
             return
 
-        self.navpanel.ShowNewTagButton(False)
-
         fitList.sort(key=self.nameKey)
 
-        for ID, name, booster, timestamp in fitList:
-            self.lpane.AddWidget(FitItem(self.lpane, ID, ("", name, booster, timestamp),tagID))
+        for ID, name, shipID, booster, timestamp in fitList:
+            self.lpane.AddWidget(FitItem(self.lpane, ID, ("", name, booster, timestamp), shipID))
 
         self.lpane.RefreshList()
         self.lpane.Thaw()
@@ -309,29 +320,17 @@ class TagBrowser(wx.Panel):
     def nameKey(self, info):
         return info[1]
 
-class PFStaticText(wx.StaticText):
-    def _init__(self,parent, label = wx.EmptyString):
-        wx.StaticText(self,parent,label)
-
-    def GetType(self):
-        return -1
-
-class PFGenBitmapButton(GenBitmapButton):
-    def __init__(self, parent, id, bitmap, pos, size, style):
-        GenBitmapButton.__init__(self, parent, id, bitmap, pos, size, style)
-        self.bgcolor = wx.Brush(wx.WHITE)
-
-    def SetBackgroundColour(self, color):
-        self.bgcolor = wx.Brush(color)
-
-    def GetBackgroundBrush(self, dc):
-        return self.bgcolor
-
 class TagItem(SBrowser.CategoryItem):
+    '''
+    TagItem inherits from shipBrowser's CategoryItem. This allows us
+    to write code specifically for the TagBrowser implementation of
+    it.
+    '''
     def __init__(self,parent, tagID, fittingInfo, size = (0,16)):
         SBrowser.CategoryItem.__init__(self,parent, tagID, fittingInfo, size)
 
         # it's not shipBmp, but we set it the same as parent to play nice
+        # it would be nice to eventually abstract this and FitItem from the shipBrowser
         self.shipBmp = bitmapLoader.getBitmap("tag_small","icons")
         self.dropShadowBitmap = drawUtils.CreateDropShadowBitmap(self.shipBmp, 0.2)
 
@@ -340,14 +339,21 @@ class TagItem(SBrowser.CategoryItem):
         self.tagBrowser = self.Parent.Parent
 
         self.tagMenu = wx.Menu()
-        self.deleteItem = self.tagMenu.Append(-1, "Delete Tag")
-        self.Bind(wx.EVT_MENU, self.OnDeleteTag, self.deleteItem)
+        self.deleteTag = self.tagMenu.Append(-1, "Delete Tag")
+        self.renameTag = self.tagMenu.Append(-1, "Rename Tag")
+
+        self.Bind(wx.EVT_MENU, self.OnDeleteTag, self.deleteTag)
+        self.Bind(wx.EVT_MENU, self.OnRenameTag, self.renameTag)
 
         self.Bind(wx.EVT_TIMER, self.OnTimer)
         self.Bind(wx.EVT_RIGHT_UP, self.OnContextMenu)
 
     def OnDeleteTag(self, event):
         print "Delete Tag"
+        pass
+
+    def OnRenameTag(self, event):
+        print "Rename Tag"
         pass
 
     def OnContextMenu(self, event):
@@ -359,65 +365,6 @@ class TagItem(SBrowser.CategoryItem):
 
     def MouseLeftUp(self, event):
         wx.PostEvent(self.tagBrowser,Stage2Selected(tagID=self.tagID, back=False))
-
-class PFBitmapFrame(wx.Frame):
-    def __init__ (self,parent, pos, bitmap):
-        wx.Frame.__init__(self, parent, id = wx.ID_ANY, title = wx.EmptyString, pos = pos, size = wx.DefaultSize, style =
-                                                               wx.NO_BORDER
-                                                             | wx.FRAME_NO_TASKBAR
-                                                             | wx.STAY_ON_TOP)
-        img = bitmap.ConvertToImage()
-        img = img.ConvertToGreyscale()
-        bitmap = wx.BitmapFromImage(img)
-        self.bitmap = bitmap
-        self.SetSize((bitmap.GetWidth(), bitmap.GetHeight()))
-        self.Bind(wx.EVT_PAINT,self.OnWindowPaint)
-        self.Bind(wx.EVT_ERASE_BACKGROUND, self.OnWindowEraseBk)
-        self.Bind(wx.EVT_TIMER, self.OnTimer)
-
-        self.timer = wx.Timer(self,wx.ID_ANY)
-        self.direction = 1
-        self.transp = 0
-        self.SetSize((bitmap.GetWidth(),bitmap.GetHeight()))
-
-        self.SetTransparent(0)
-        self.Refresh()
-
-    def OnTimer(self, event):
-        self.transp += 20*self.direction
-        if self.transp > 200:
-            self.transp = 200
-            self.timer.Stop()
-        if self.transp < 0:
-            self.transp = 0
-            self.timer.Stop()
-            wx.Frame.Show(self,False)
-            self.Destroy()
-            return
-        self.SetTransparent(self.transp)
-
-    def Show(self, showWnd = True):
-        if showWnd:
-            wx.Frame.Show(self, showWnd)
-            self.Parent.SetFocus()
-            self.direction = 1
-            self.timer.Start(5)
-        else:
-            self.direction = -1
-            self.timer.Start(5)
-
-    def OnWindowEraseBk(self,event):
-        pass
-
-    def OnWindowPaint(self,event):
-        rect = self.GetRect()
-        canvas = wx.EmptyBitmap(rect.width, rect.height)
-        mdc = wx.BufferedPaintDC(self)
-        mdc.SelectObject(canvas)
-        mdc.DrawBitmap(self.bitmap, 0, 0)
-        mdc.SetPen( wx.Pen("#000000", width = 1 ) )
-        mdc.SetBrush( wx.TRANSPARENT_BRUSH )
-        mdc.DrawRectangle( 0,0,rect.width,rect.height)
 
 class FitItem(SBrowser.FitItem):
     def __init__(self, parent, fitID=None, shipFittingInfo=("Test", "cnc's avatar", 0, 0 ), shipID = None, itemData=None,

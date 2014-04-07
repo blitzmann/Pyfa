@@ -116,7 +116,7 @@ class Fit(object):
         fits = eos.db.getFitsWithTag(id)
         names = []
         for fit in fits:
-            names.append((fit.ID, fit.name, fit.booster, fit.timestamp))
+            names.append((fit.ID, fit.name, fit.shipID, fit.booster, fit.timestamp))
 
         return names
 
