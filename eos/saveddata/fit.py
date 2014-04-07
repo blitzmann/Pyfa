@@ -607,6 +607,10 @@ class Fit(object):
         return self.__drones
 
     @property
+    def tags(self):
+        return self.__tags
+
+    @property
     def modules(self):
         return self.__modules
 

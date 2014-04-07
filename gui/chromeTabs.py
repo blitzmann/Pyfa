@@ -83,11 +83,13 @@ class PFNotebook(wx.Panel):
 
         mainSizer = wx.BoxSizer( wx.VERTICAL )
 
-        self.tabsSizer = wx.BoxSizer( wx.HORIZONTAL ) # sizer to hold tab area
-        tabsContent = wx.BoxSizer( wx.VERTICAL ) # sizer to hold actual tabs
+        self.tabsSizer = wx.FlexGridSizer( 0, 2, 0, 0 )
+        self.tabsSizer.AddGrowableCol( 0 )
+        self.tabsSizer.SetFlexibleDirection( wx.BOTH )
+        self.tabsSizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+
         self.tabsContainer = PFTabsContainer(self, canAdd = canAdd)
-        tabsContent.Add( self.tabsContainer, 0, wx.EXPAND )
-        self.tabsSizer.Add( tabsContent, 1, wx.EXPAND, 5 )
+        self.tabsSizer.Add( self.tabsContainer, 0, wx.EXPAND )
 
         mainSizer.Add( self.tabsSizer, 0, wx.EXPAND, 5 )
 

@@ -111,6 +111,15 @@ class Fit(object):
 
         return names
 
+    def getFitsWithTag(self, id):
+        ''' Lists fits of shipID, used with shipBrowser '''
+        fits = eos.db.getFitsWithTag(id)
+        names = []
+        for fit in fits:
+            names.append((fit.ID, fit.name, fit.booster, fit.timestamp))
+
+        return names
+
     def getBoosterFits(self):
         ''' Lists fits flagged as booster '''
         fits = eos.db.getBoosterFits()

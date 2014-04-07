@@ -19,7 +19,7 @@
 
 from eos.db.util import processEager, processWhere
 from eos.db import saveddata_session, sd_lock
-from eos.types import User, Character, Fit, Price, DamagePattern, Fleet, MiscData, Wing, Squad
+from eos.types import User, Character, Fit, Price, DamagePattern, Fleet, MiscData, Wing, Squad, Tag
 from eos.db.saveddata.fleet import squadmembers_table
 from sqlalchemy.sql import and_
 import eos.config
@@ -248,6 +248,30 @@ def getFitsWithShip(shipID, ownerID=None, where=None, eager=None):
         raise TypeError("ShipID must be integer")
     return fits
 
+def getFitsWithTag(tagID, ownerID=None, where=None, eager=None):
+    """
+    Get all the fits tag with tagID
+    If no user is passed, do this for all users.
+    """
+    # @todo: fix this
+    return []
+    if isinstance(tagID, int):
+        if ownerID is not None and not isinstance(ownerID, int):
+            raise TypeError("OwnerID must be integer")
+
+        filter = Tag.tagID == tagID
+
+        if ownerID is not None:
+            filter = and_(filter, Fit.ownerID == ownerID)
+
+        filter = processWhere(filter, where)
+        eager = processEager(eager)
+        with sd_lock:
+            fits = saveddata_session.query(Fit).options(*eager).filter(filter).all()
+    else:
+        raise TypeError("TagID must be integer")
+    return fits
+
 def getBoosterFits(ownerID=None, where=None, eager=None):
     """
     Get all the fits that are flagged as a boosting ship
@@ -297,6 +321,12 @@ def getFleetList(eager=None):
     with sd_lock:
         fleets = saveddata_session.query(Fleet).options(*eager).all()
     return fleets
+
+def getTagList(eager=None):
+    eager = processEager(eager)
+    with sd_lock:
+        tags = saveddata_session.query(Tag).options(*eager).all()
+    return tags
 
 @cachedQuery(Price, 1, "typeID")
 def getPrice(typeID):
