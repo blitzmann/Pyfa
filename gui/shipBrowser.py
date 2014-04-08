@@ -451,7 +451,6 @@ class NavigationPanel(SFItem.SFBrowserItem):
     def OnHistoryBack(self):
         if len(self.shipBrowser.browseHist) > 0:
             stage,data = self.shipBrowser.browseHist.pop()
-            print stage,data
             self.gotoStage(stage,data)
 
     def AdjustChannels(self, bitmap):
@@ -538,7 +537,6 @@ class NavigationPanel(SFItem.SFBrowserItem):
         elif stage == 5:
             wx.PostEvent(self.Parent,Stage5Selected(fitID=data, back = 1))
         elif stage == 4:
-            print "go to stage 4"
             self.shipBrowser._activeStage = 4
             self.stStatus.SetLabel("Search: %s" % data.capitalize())
             self.Layout()
@@ -1004,7 +1002,6 @@ class CategoryItem(SFItem.SFBrowserItem):
 
 
         self.catx = self.shipBmpx + self.shipBmp.GetWidth() + self.padding
-        #print self.catx
         self.caty = (rect.height - htext) / 2
 
     def DrawItem(self, mdc):
@@ -1865,7 +1862,6 @@ class FitInfo(wx.Panel):
         #SFItem.SFBrowserItem.__init__ (self, parent, size = size)
         wx.Panel.__init__ (self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.Size(500, 300), style=wx.TAB_TRAVERSAL)
 
-        print "FitDesc"
         self.sFit = service.Fit.getInstance()
         self.mainFrame = gui.mainFrame.MainFrame.getInstance()
 
