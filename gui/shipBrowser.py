@@ -451,6 +451,7 @@ class NavigationPanel(SFItem.SFBrowserItem):
     def OnHistoryBack(self):
         if len(self.shipBrowser.browseHist) > 0:
             stage,data = self.shipBrowser.browseHist.pop()
+            print stage,data
             self.gotoStage(stage,data)
 
     def AdjustChannels(self, bitmap):
@@ -840,11 +841,13 @@ class ShipBrowser(wx.Panel):
 
         self.lpane.ShowLoading(False)
 
+        self.browseHist.append( (3,self._stage3Data) )
+
         fitID = event.fitID
         self.lastdata = fitID
         self._lastStage = self._activeStage
         self._activeStage = 5
-        print self._lastStage
+
         sFit = service.Fit.getInstance()
         sMarket = service.Market.getInstance()
 

@@ -55,12 +55,13 @@ class FitSpawner(gui.multiSwitch.TabSpawner):
 
     def clickInfo(self, event):
         page = self.multiSwitch.GetCurrentPage()
-        wx.PostEvent(self.mainFrame.shipBrowser, gui.shipBrowser.Stage5Selected(fitID=page.activeFitID))
+        if not isinstance(page, gui.builtinViews.emptyView.BlankPage):
+            wx.PostEvent(self.mainFrame.shipBrowser, gui.shipBrowser.Stage5Selected(fitID=page.activeFitID, back=self.mainFrame.shipBrowser.GetActiveStage()))
+            self.mainFrame.notebookBrowsers.SetSelection(1)
 
     def fitSelected(self, event):
-        print "fittingView.fitSelected"
         '''
-        Fit selected = a new fit is opened, not one thats already opened and is changed too
+        This event is fired whenever a a new fit is opened, but not fired when switching tabs
         '''
         count = -1
         if self.multiSwitch.GetPageCount() == 0:
