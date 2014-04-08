@@ -115,8 +115,11 @@ class Fit(object):
         ''' Lists fits of shipID, used with shipBrowser '''
         fits = eos.db.getFitsWithTag(id)
         names = []
+        sMarket = Market.getInstance()
+
         for fit in fits:
-            names.append((fit.ID, fit.name, fit.shipID, fit.booster, fit.timestamp))
+            shipName = sMarket.getItem(fit.shipID).name
+            names.append((fit.ID, fit.name, fit.shipID, fit.booster, shipName))
 
         return names
 

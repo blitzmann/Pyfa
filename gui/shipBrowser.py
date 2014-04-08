@@ -1478,7 +1478,8 @@ class FitItem(SFItem.SFBrowserItem):
 
         self.maxDelta = 48
 
-        self.Bind(wx.EVT_TIMER, self.OnTimer)
+        # disabled - animations not working / unneeded at this time
+        #self.Bind(wx.EVT_TIMER, self.OnTimer)
 
         #=======================================================================
         # DISABLED - it will be added as an option in PREFERENCES
@@ -1755,9 +1756,18 @@ class FitItem(SFItem.SFBrowserItem):
 
         mdc.SetFont(self.fontNormal)
 
-        fitDate = time.localtime(self.timestamp)
-        fitLocalDate = "%d/%02d/%02d %02d:%02d" % ( fitDate[0], fitDate[1], fitDate[2], fitDate[3], fitDate[4])
-        pfdate = drawUtils.GetPartialText(mdc, fitLocalDate, self.toolbarx - self.textStartx - self.padding * 2 - self.thoverw)
+        # @todo: this is a dirty, dirty hack. With the introduction of tags,
+        # I thought it was more prudent to show the ship name rather
+        # than the timestamp. To do this, we need to test the timestamp
+        # variable. This goes against basic coding guidelines, but a
+        # proper fix would be to abstract FitItem away from just the shipBrowser
+        # and abstract the variable names
+        if isinstance(self.timestamp, float):
+            fitDate = time.localtime(self.timestamp)
+            fitLocalDate = "%d/%02d/%02d %02d:%02d" % ( fitDate[0], fitDate[1], fitDate[2], fitDate[3], fitDate[4])
+            pfdate = drawUtils.GetPartialText(mdc, fitLocalDate, self.toolbarx - self.textStartx - self.padding * 2 - self.thoverw)
+        elif isinstance(self.timestamp, basestring):
+            pfdate = drawUtils.GetPartialText(mdc, self.timestamp, self.toolbarx - self.textStartx - self.padding * 2 - self.thoverw)
 
         mdc.DrawText(pfdate, self.textStartx, self.timestampy)
 
