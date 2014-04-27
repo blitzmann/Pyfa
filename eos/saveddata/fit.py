@@ -530,7 +530,7 @@ class Fit(object):
             shipType = doc.createElement("shipType")
             shipType.setAttribute("value", fit.ship.item.name)
             fitting.appendChild(shipType)
-        
+
             charges = {}
             slotNum = {}
             for module in fit.modules:
@@ -766,22 +766,36 @@ class Fit(object):
     def getModifier(self):
         return self.__modifier
 
-    def calculateModifiedAttributes(self, targetFit=None, withBoosters=False, dirtyStorage=None):
+    def calculateModifiedAttributes(self, targetFit=None, withBoosters=False, dirtyStorage=None, tabsize=0):
+        tabs = "\t" * tabsize
+        tabsize += 1
+        print "\n\n%s=== Start %d %s ====="%(tabs,self.ID,id(self))
+
+        print "%sDirty Storage: %s"%(tabs, dirtyStorage)
+        print "%sWith Boosters: %s"%(tabs, withBoosters)
+        print "%sTarget Fit: %s\n"%(tabs, id(targetFit) if targetFit else None)
+
         refreshBoosts = False
         if withBoosters is True:
             refreshBoosts = True
         if dirtyStorage is not None and self.ID in dirtyStorage:
+            print "%sID in dirtyStorage"%(tabs)
             refreshBoosts = True
         if dirtyStorage is not None:
+            print "%sUpdate dirtyStorage"%(tabs)
             dirtyStorage.update(self.boostsFits)
         if self.fleet is not None and refreshBoosts is True:
+            print "%sRefresh Gang boosts"%(tabs)
             self.gangBoosts = self.fleet.recalculateLinear(withBoosters=withBoosters, dirtyStorage=dirtyStorage)
         elif self.fleet is None:
+            print "%sNo fleet, setting gang to None"%(tabs)
             self.gangBoosts = None
         if dirtyStorage is not None:
             try:
                 dirtyStorage.remove(self.ID)
+                print "%sRemove ID from dirty storage: success"%(tabs)
             except KeyError:
+                print "%sRemove ID from dirty storage: error (key error)"%(tabs)
                 pass
         # If we're not explicitly asked to project fit onto something,
         # set self as target fit
@@ -791,19 +805,23 @@ class Fit(object):
         # Else, we're checking all target projectee fits
         elif targetFit not in self.__calculatedTargets:
             self.__calculatedTargets.append(targetFit)
-            targetFit.calculateModifiedAttributes(dirtyStorage=dirtyStorage)
+            print "%sTarget fit not calculated, calculating..."%(tabs)
+            targetFit.calculateModifiedAttributes(dirtyStorage=dirtyStorage, tabsize=tabsize)
             forceProjected = True
         # Or do nothing if target fit is calculated
         else:
             return
-
+            
+        print "\n%sForce Projected: %s"%(tabs,forceProjected)
+        
         # If fit is calculated and we have nothing to do here, get out
         if self.__calculated == True and forceProjected == False:
+            print "%sFit already calculated, returning"%(tabs)
             return
 
         # Mark fit as calculated
         self.__calculated = True
-
+        print
         # There's a few things to keep in mind here
         # 1: Early effects first, then regular ones, then late ones, regardless of anything else
         # 2: Some effects aren't implemented
@@ -813,12 +831,14 @@ class Fit(object):
             # Build a little chain of stuff
             # Avoid adding projected drones and modules when fit is projected onto self
             # TODO: remove this workaround when proper self-projection using virtual duplicate fits is implemented
-            if targetFit == self and forceProjected is True:
+            if forceProjected is True:
+                print "%s%s chain: projected"%(tabs,runTime)
                 c = chain((self.character, self.ship), self.drones, self.boosters, self.appliedImplants, self.modules)
             else:
+                print "%s%s chain: standalone"%(tabs,runTime)
                 c = chain((self.character, self.ship), self.drones, self.boosters, self.appliedImplants, self.modules,
                           self.projectedDrones, self.projectedModules)
-
+            
             for item in c:
                 # Registering the item about to affect the fit allows us to track "Affected By" relations correctly
                 if item is not None:
@@ -852,8 +872,12 @@ class Fit(object):
                                 effect.handler(targetFit, thing, context)
                             except:
                                 pass
+        if self.projectedFits:
+            print "\n%sLooping through projected fits -->"%(tabs)
         for fit in self.projectedFits:
-            fit.calculateModifiedAttributes(self, dirtyStorage=dirtyStorage)
+            fit.calculateModifiedAttributes(self, dirtyStorage=dirtyStorage,tabsize=tabsize)
+        tabsize-=1
+        print "%s=== End %d ====="%(tabs,self.ID)
 
     def fill(self):
         """
