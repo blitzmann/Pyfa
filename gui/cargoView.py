@@ -20,12 +20,12 @@
 import wx
 import service
 import gui.display as d
-import gui.globalEvents as GE
 import gui.marketBrowser as mb
 from gui.builtinViewColumns.state import State
 from gui.contextMenu import ContextMenu
+import globalEvents as GE
 
-class BoosterViewDrop(wx.PyDropTarget):
+class CargoViewDrop(wx.PyDropTarget):
         def __init__(self, dropFn):
             wx.PyDropTarget.__init__(self)
             self.dropFn = dropFn
@@ -39,10 +39,11 @@ class BoosterViewDrop(wx.PyDropTarget):
                 self.dropFn(x, y, data)
             return t
 
-class BoosterView(d.Display):
-    DEFAULT_COLS = ["State",
-                    "attr:boosterness",
-                    "Base Name"]
+#  @todo: Was copied form another class and modified. Look through entire file, refine
+class CargoView(d.Display):
+    DEFAULT_COLS = ["Base Icon",
+                    "Base Name",
+                    "attr:volume"]
 
     def __init__(self, parent):
         d.Display.__init__(self, parent, style=wx.LC_SINGLE_SEL | wx.BORDER_NONE)
@@ -50,13 +51,11 @@ class BoosterView(d.Display):
         self.lastFitId = None
 
         self.mainFrame.Bind(GE.FIT_CHANGED, self.fitChanged)
-        self.mainFrame.Bind(mb.ITEM_SELECTED, self.addItem)
-
         self.Bind(wx.EVT_LEFT_DCLICK, self.removeItem)
-        self.Bind(wx.EVT_LEFT_DOWN, self.click)
         self.Bind(wx.EVT_KEY_UP, self.kbEvent)
 
-        self.SetDropTarget(BoosterViewDrop(self.handleListDrag))
+        self.SetDropTarget(CargoViewDrop(self.handleListDrag))
+        self.Bind(wx.EVT_LIST_BEGIN_DRAG, self.startDrag)
 
         if "__WXGTK__" in  wx.PlatformInfo:
             self.Bind(wx.EVT_RIGHT_UP, self.scheduleMenu)
@@ -72,17 +71,57 @@ class BoosterView(d.Display):
             data[1] is typeID or index of data we want to manipulate
         '''
 
-        if data[0] == "market":
-            wx.PostEvent(self.mainFrame, mb.ItemSelected(itemID=int(data[1])))
+        if data[0] == "fitting":
+            self.swapModule(x, y, int(data[1]))
+        elif data[0] == "market":
+            sFit = service.Fit.getInstance()
+            sFit.addCargo(self.mainFrame.getActiveFit(), int(data[1]), 1)
+            wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=self.mainFrame.getActiveFit()))
+
+    def startDrag(self, event):
+        row = event.GetIndex()
+
+        if row != -1:
+            data = wx.PyTextDataObject()
+            data.SetText("cargo:"+str(row))
+
+            dropSource = wx.DropSource(self)
+            dropSource.SetData(data)
+            res = dropSource.DoDragDrop()
 
     def kbEvent(self,event):
         keycode = event.GetKeyCode()
         if keycode == wx.WXK_DELETE or keycode == wx.WXK_NUMPAD_DELETE:
+            fitID = self.mainFrame.getActiveFit()
+            cFit = service.Fit.getInstance()
             row = self.GetFirstSelected()
             if row != -1:
-                self.removeBooster(self.boosters[self.GetItemData(row)])
-
+                cFit.removeCargo(fitID, self.GetItemData(row))
+                wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=fitID))
         event.Skip()
+
+    def swapModule(self, x, y, modIdx):
+        '''Swap a module from fitting window with cargo'''
+        sFit = service.Fit.getInstance()
+        fit = sFit.getFit(self.mainFrame.getActiveFit())
+        dstRow, _ = self.HitTest((x, y))
+        mstate = wx.GetMouseState()
+
+        # Gather module information to get position
+        module = fit.modules[modIdx]
+
+        if dstRow != -1: # we're swapping with cargo
+            if mstate.CmdDown(): # if copying, append to cargo
+                sFit.addCargo(self.mainFrame.getActiveFit(), module.item.ID)
+            else: # else, move / swap
+                sFit.moveCargoToModule(self.mainFrame.getActiveFit(), module.position, dstRow)
+        else: # dragging to blank spot, append
+            sFit.addCargo(self.mainFrame.getActiveFit(), module.item.ID)
+
+            if not mstate.CmdDown(): # if not copying, remove module
+               sFit.removeModule(self.mainFrame.getActiveFit(), module.position)
+
+        wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=self.mainFrame.getActiveFit()))
 
     def fitChanged(self, event):
         #Clear list and get out if current fitId is None
@@ -92,11 +131,12 @@ class BoosterView(d.Display):
             event.Skip()
             return
 
-        sFit = service.Fit.getInstance()
-        fit = sFit.getFit(event.fitID)
+        cFit = service.Fit.getInstance()
+        fit = cFit.getFit(event.fitID)
 
-        self.origional = fit.boosters if fit is not None else None
-        self.boosters = stuff = fit.boosters[:] if fit is not None else None
+        self.original = fit.cargo if fit is not None else None
+        self.cargo = stuff = fit.cargo if fit is not None else None
+        if stuff is not None: stuff.sort(key=lambda cargo: cargo.itemID)
 
         if event.fitID != self.lastFitId:
             self.lastFitId = event.fitID
@@ -112,40 +152,16 @@ class BoosterView(d.Display):
         self.refresh(stuff)
         event.Skip()
 
-    def addItem(self, event):
-        cFit = service.Fit.getInstance()
-        fitID = self.mainFrame.getActiveFit()
-        trigger = cFit.addBooster(fitID, event.itemID)
-        if trigger:
-            wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=fitID))
-            self.mainFrame.additionsPane.select("Boosters")
-
-        event.Skip()
-
     def removeItem(self, event):
         row, _ = self.HitTest(event.Position)
         if row != -1:
             col = self.getColumn(event.Position)
             if col != self.getColIndex(State):
-                self.removeBooster(self.boosters[self.GetItemData(row)])
-
-    def removeBooster(self, booster):
-        fitID = self.mainFrame.getActiveFit()
-        cFit = service.Fit.getInstance()
-        cFit.removeBooster(fitID, self.origional.index(booster))
-        wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=fitID))
-
-    def click(self, event):
-        event.Skip()
-        row, _ = self.HitTest(event.Position)
-        if row != -1:
-            col = self.getColumn(event.Position)
-            if col == self.getColIndex(State):
                 fitID = self.mainFrame.getActiveFit()
                 cFit = service.Fit.getInstance()
-                cFit.toggleBooster(fitID, row)
+                cargo = self.cargo[self.GetItemData(row)]
+                cFit.removeCargo(fitID, self.original.index(cargo))
                 wx.PostEvent(self.mainFrame, GE.FitChanged(fitID=fitID))
-
 
     def scheduleMenu(self, event):
         event.Skip()
@@ -157,9 +173,11 @@ class BoosterView(d.Display):
         if sel != -1:
             cFit = service.Fit.getInstance()
             fit = cFit.getFit(self.mainFrame.getActiveFit())
-            item = fit.boosters[sel]
+            cargo = fit.cargo[sel]
 
-            srcContext = "boosterItem"
-            itemContext = "Booster"
-            menu = ContextMenu.getMenu((item,), (srcContext, itemContext))
+            sMkt = service.Market.getInstance()
+            sourceContext = "cargoItem"
+            itemContext = sMkt.getCategoryByItem(cargo.item).name
+
+            menu = ContextMenu.getMenu((cargo,), (sourceContext, itemContext))
             self.PopupMenu(menu)
