@@ -45,6 +45,7 @@ from gui.statsPane import StatsPane
 from gui.shipBrowser import ShipBrowser, FitSelected
 from gui.characterEditor import CharacterEditor
 from gui.characterSelection import CharacterSelection
+from gui.tacticalSelection import TacticalSelection
 from gui.patternEditor import DmgPatternEditorDlg
 from gui.resistsEditor import ResistsEditorDlg
 from gui.preferenceDialog import PreferenceDialog
@@ -163,6 +164,9 @@ class MainFrame(wx.Frame):
 
         self.charSelection = CharacterSelection(self)
         cstatsSizer.Add(self.charSelection, 0, wx.EXPAND)
+
+        self.tacticalSelection = TacticalSelection(self)
+        cstatsSizer.Add(self.tacticalSelection, 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 3)
 
         self.statsPane = StatsPane(self)
         cstatsSizer.Add(self.statsPane, 0, wx.EXPAND)
