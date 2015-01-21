@@ -49,6 +49,7 @@ def main(db, json_path):
         "dgmattribs": eos.gamedata.AttributeInfo,
         "dgmeffects": eos.gamedata.EffectInfo,
         "dgmtypeattribs": eos.gamedata.Attribute,
+        "dgmexpressions": eos.gamedata.Expression,
         "dgmtypeeffects": eos.gamedata.Effect,
         "dgmunits": eos.gamedata.Unit,
         "icons": eos.gamedata.Icon,
@@ -163,9 +164,7 @@ def main(db, json_path):
     # Set with typeIDs which we will have in our database
     invTypes = set()
     for row in data["invtypes"]:
-        # 1306 - group Ship Modifiers, for items like tactical t3 ship modes
-        if (row["published"] or row['groupID'] == 1306):
-            invTypes.add(row["typeID"])
+        invTypes.add(row["typeID"])
 
     # ignore checker
     def isIgnored(file, row):

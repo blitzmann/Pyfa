@@ -36,6 +36,9 @@ attributes_table = Table("dgmattribs", gamedata_meta,
                          Column("published", Boolean),
                          Column("displayName", String),
                          Column("highIsGood", Boolean),
+                         Column("stackable", Boolean),
+                         Column("chargeRechargeTimeID", Integer),
+                         Column("attributeIdx", Integer),
                          Column("iconID", Integer, ForeignKey("icons.iconID")),
                          Column("unitID", Integer, ForeignKey("dgmunits.unitID")))
 

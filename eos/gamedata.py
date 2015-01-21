@@ -352,6 +352,9 @@ class AttributeInfo(EqBase):
 class Attribute(EqBase):
     pass
 
+class Expression(EqBase):
+    pass
+
 class Category(EqBase):
     pass
 
