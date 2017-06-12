@@ -120,7 +120,7 @@ class FittingViewDrop(wx.PyDropTarget):
 
 
 class FittingView(d.Display):
-    DEFAULT_COLS = ["State",
+    DEFAULT_COLS = [
                     "Ammo Icon",
                     "Base Icon",
                     "Base Name",
@@ -135,6 +135,10 @@ class FittingView(d.Display):
 
     def __init__(self, parent):
         d.Display.__init__(self, parent, size=(0, 0), style=wx.BORDER_NONE)
+
+        self.SetBackgroundColour(wx.Colour(30,30,30,255))
+        self.SetForegroundColour(wx.Colour(220,220,220,255))
+
         self.Show(False)
         self.parent = parent
         self.mainFrame.Bind(GE.FIT_CHANGED, self.fitChanged)

@@ -31,6 +31,9 @@ class Display(wx.ListCtrl):
     def __init__(self, parent, size=wx.DefaultSize, style=0):
 
         wx.ListCtrl.__init__(self, parent, size=size, style=wx.LC_REPORT | style)
+
+        self.SetBackgroundColour(wx.Colour(30, 30, 30, 255))
+        self.SetForegroundColour(wx.Colour(220, 220, 220, 255))
         self.imageList = CachingImageList(16, 16)
         self.SetImageList(self.imageList, wx.IMAGE_LIST_SMALL)
         self.activeColumns = []
@@ -151,6 +154,7 @@ class Display(wx.ListCtrl):
     def addColumn(self, i, col):
         self.activeColumns.append(col)
         info = wx.ListItem()
+        info.SetBackgroundColour(wx.BLUE)
         info.m_mask = col.mask | wx.LIST_MASK_FORMAT | wx.LIST_MASK_WIDTH
         info.m_image = col.imageId
         info.m_text = col.columnText

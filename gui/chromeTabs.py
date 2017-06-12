@@ -106,7 +106,7 @@ class PFNotebook(wx.Panel):
         """
 
         wx.Panel.__init__(self, parent, wx.ID_ANY, size=(-1, -1))
-
+        self.SetBackgroundColour(wx.Colour(45,45,48,255))
         self.pages = []
         self.activePage = None
 
@@ -116,7 +116,7 @@ class PFNotebook(wx.Panel):
         self.tabsContainer = PFTabsContainer(self, canAdd=canAdd)
         tabsSizer.Add(self.tabsContainer, 0, wx.EXPAND)
 
-        style = wx.DOUBLE_BORDER if 'wxMSW' in wx.PlatformInfo else wx.SIMPLE_BORDER
+        style = wx.SIMPLE_BORDER
 
         contentSizer = wx.BoxSizer(wx.VERTICAL)
         self.pageContainer = wx.Panel(self, style=style)
@@ -539,7 +539,7 @@ class PFTabRenderer(object):
 
     def InitColors(self):
         """Determines colors used for tab, based on system settings"""
-        self.tabColor = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
+        self.tabColor = wx.Colour(45, 45, 48, 255)#wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
         self.inactiveColor = colorUtils.GetSuitableColor(self.tabColor, 0.25)
         self.selectedColor = colorUtils.GetSuitableColor(self.tabColor, 0.10)
 
@@ -700,8 +700,9 @@ class PFTabsContainer(wx.Panel):
         """
 
         wx.Panel.__init__(self, parent, id, pos, size)
-        if wx.VERSION >= (3, 0):
-            self.SetBackgroundStyle(wx.BG_STYLE_PAINT)
+        self.SetBackgroundColour(wx.Colour(45, 45, 48, 255))
+
+
 
         self.tabs = []
         width, height = size
@@ -1135,7 +1136,7 @@ class PFTabsContainer(wx.Panel):
             # noinspection PyUnresolvedReferences
             brush.MacSetTheme(kThemeBrushDialogBackgroundActive)
         else:
-            color = wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
+            color = wx.Colour(45,45,48,255)#wx.SystemSettings_GetColour(wx.SYS_COLOUR_3DFACE)
             brush = wx.Brush(color)
 
         if "wxGTK" not in wx.PlatformInfo:

@@ -50,8 +50,8 @@ class TogglePanel(wx.Panel):
         self.bmpCollapsed = BitmapLoader.getBitmap("up-arrow2", "gui")
 
         # Make the bitmaps have the same color as window text
-        sysTextColour = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
-
+        sysTextColour = wx.WHITE#wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT)
+        self.SetForegroundColour(wx.WHITE)
         img = self.bmpExpanded.ConvertToImage()
         img.Replace(0, 0, 0, sysTextColour[0], sysTextColour[1], sysTextColour[2])
         self.bmpExpanded = wx.BitmapFromImage(img)

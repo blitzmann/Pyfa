@@ -68,7 +68,7 @@ class PyGauge(wx.PyWindow):
         self._animDirection = 0
         self.animEffect = animEffects.OUT_QUAD
 
-        self.transitionsColors = [(wx.Colour(191, 191, 191, 255), wx.Colour(96, 191, 0, 255)),
+        self.transitionsColors = [(wx.Colour(45, 45, 48, 255), wx.Colour(96, 191, 0, 255)),
                                   (wx.Colour(191, 167, 96, 255), wx.Colour(255, 191, 0, 255)),
                                   (wx.Colour(255, 191, 0, 255), wx.Colour(255, 128, 0, 255)),
                                   (wx.Colour(255, 128, 0, 255), wx.Colour(255, 0, 0, 255))]

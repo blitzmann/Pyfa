@@ -20,11 +20,12 @@
 from gui.chromeTabs import PFNotebook
 import gui.builtinViews.emptyView
 
-
+import wx
 class MultiSwitch(PFNotebook):
     def __init__(self, parent):
         PFNotebook.__init__(self, parent)
         # self.AddPage() # now handled by mainFrame
+
         self.handlers = handlers = []
         for type in TabSpawner.tabTypes:
             handlers.append(type(self))

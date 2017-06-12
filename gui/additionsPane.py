@@ -44,6 +44,8 @@ class AdditionsPane(TogglePanel):
         baseSizer = wx.BoxSizer(wx.HORIZONTAL)
         pane.SetSizer(baseSizer)
 
+        self.SetBackgroundColour(wx.Colour(45,45,48,255))
+
         self.notebook = PFNotebook(pane, False)
         self.notebook.SetMinSize((-1, 1000))
 

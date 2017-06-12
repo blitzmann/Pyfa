@@ -149,6 +149,7 @@ class MainFrame(wx.Frame, IPortUser):
     def __init__(self, title="pyfa"):
         pyfalog.debug("Initialize MainFrame")
         self.title = title
+
         wx.Frame.__init__(self, None, wx.ID_ANY, self.title)
 
         MainFrame.__instance = self
@@ -158,9 +159,13 @@ class MainFrame(wx.Frame, IPortUser):
 
         self.disableOverrideEditor = disableOverrideEditor
 
-        # Fix for msw (have the frame background color match panel color
-        if 'wxMSW' in wx.PlatformInfo:
-            self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        # # Fix for msw (have the frame background color match panel color
+        # if 'wxMSW' in wx.PlatformInfo:
+        #     self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+
+        self.SetBackgroundColour(wx.Colour(45,45,48,255))
+
+        self.SetForegroundColour(wx.Colour(220, 220, 220, 255))
 
         # Load and set the icon for pyfa main window
         i = wx.IconFromBitmap(BitmapLoader.getBitmap("pyfa", "gui"))
@@ -170,9 +175,12 @@ class MainFrame(wx.Frame, IPortUser):
         mainSizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.browser_fitting_split = wx.SplitterWindow(self, style=wx.SP_LIVE_UPDATE)
+        self.browser_fitting_split.SetBackgroundColour(wx.Colour(45,45,48,255))
+
+
         self.fitting_additions_split = wx.SplitterWindow(self.browser_fitting_split, style=wx.SP_LIVE_UPDATE)
 
-        mainSizer.Add(self.browser_fitting_split, 1, wx.EXPAND | wx.LEFT, 2)
+        mainSizer.Add(self.browser_fitting_split, 1, wx.EXPAND, 2)
 
         self.fitMultiSwitch = MultiSwitch(self.fitting_additions_split)
         self.additionsPane = AdditionsPane(self.fitting_additions_split)
