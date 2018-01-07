@@ -80,5 +80,6 @@ from gui.builtinViewColumns import (  # noqa: E402, F401
     price,
     propertyDisplay,
     state,
-    sideEffects
+    sideEffects,
+    graphColor
 )

@@ -119,6 +119,8 @@ class GraphFrame(wx.Frame):
         self.mainFrame = gui.mainFrame.MainFrame.getInstance()
         self.CreateStatusBar()
 
+        self.lineColor = {}
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         self.SetSizer(sizer)
 
@@ -187,7 +189,6 @@ class GraphFrame(wx.Frame):
         self.markerX = 0
         self.selected = None
         self.nextColor = 0
-        self.lineColor = {}
         self.lineData = {}
         self.currentViewIndex = None
         self.currentView = None
@@ -470,6 +471,7 @@ class GraphFrame(wx.Frame):
         self.plotPanel.draw(lineDataGen, self.markerX)
         if self.selected:
             self.buttonLineColor.Enable()
+
             self.buttonLineColor.SetBackgroundColour(tuple(c * 255 for c in self.lineColor[self.selected]))
             fitID, tgtID = self.selected
             if tgtID is None:
@@ -501,10 +503,22 @@ class FitList(wx.Panel):
 
 class FitDisplay(gui.display.Display):
     DEFAULT_COLS = ["Base Icon",
+                    "Graph Color",
                     "Base Name:Attacker Name"]
 
     def __init__(self, parent):
         gui.display.Display.__init__(self, parent)
+
+    def getColor(self, fit):
+        '''
+        getColor is used as a callback for the Graph Color ViewColumn. This is where we determine what color to display
+        for the item. Must return a wx.Colour.
+        '''
+        t = self.Parent.frame.lineColor.get((fit.ID, None), None)
+        if t is None:
+            return wx.Colour(0, 0, 0, 1.0)
+        x = tuple(c * 255 for c in t)
+        return wx.Colour(x[0], x[1], x[2])
 
 
 class TargetList(wx.Panel):

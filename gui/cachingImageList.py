@@ -26,6 +26,8 @@ from gui.bitmapLoader import BitmapLoader
 class CachingImageList(wx.ImageList):
     def __init__(self, width, height):
         wx.ImageList.__init__(self, width, height)
+        self.width = width
+        self.height = height
         self.map = {}
 
     def GetImageIndex(self, *loaderArgs):
@@ -36,3 +38,14 @@ class CachingImageList(wx.ImageList):
                 return -1
             id_ = self.map[loaderArgs] = wx.ImageList.Add(self, bitmap)
         return id_
+
+    def GenerateColorBitmap(self, color):
+        id_ = self.map.get(color)
+        if id_ is None:
+            bitmap = wx.EmptyBitmapRGBA(self.width, self.height, red=color.red, green=color.green, blue=color.blue, alpha=color.alpha)
+            if bitmap is None:
+                return -1
+            id_ = self.map[color] = wx.ImageList.Add(self, bitmap)
+        return id_
+
+
