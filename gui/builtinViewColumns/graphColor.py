@@ -1,10 +1,5 @@
 # noinspection PyPackageRequirements
 import wx
-from eos.saveddata.implant import Implant
-from eos.saveddata.drone import Drone
-from eos.saveddata.module import Module, Slot, Rack
-from eos.saveddata.fit import Fit
-from eos.saveddata.targetResists import TargetResists
 from gui.viewColumn import ViewColumn
 from logbook import Logger
 
