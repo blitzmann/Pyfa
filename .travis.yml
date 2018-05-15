@@ -32,8 +32,6 @@ before_install:
  # - conda install -c https://conda.anaconda.org/travis wxpython=4.0.0b2
 before_script:
   - pip install pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-14.04/wxPython-4.0.0b2-cp36-cp36m-linux_x86_64.whl
-  - pip install -r requirements.txt
-  - pip install -r requirements_test.txt
 script:
   - py.test --cov=./
 after_success:
