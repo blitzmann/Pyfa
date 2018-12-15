@@ -1,14 +1,7 @@
 os: osx
 osx_image: xcode6.4
-language: python
-cache: pip
-python:
-  - '3.6'
 env:
   - TOXENV=pep8
-addons:
-  apt:
-    packages:
 before_install:
   - brew install python3.6
   - pip install tox
