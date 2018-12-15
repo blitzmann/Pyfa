@@ -1,5 +1,5 @@
-dist: trusty
-sudo: required
+os: osx
+osx_image: xcode6.4
 language: python
 cache: pip
 python:
@@ -10,11 +10,13 @@ addons:
   apt:
     packages:
 before_install:
-  - sudo apt-get update && sudo apt-get --reinstall install -qq language-pack-en language-pack-ru language-pack-he language-pack-zh-hans
+  - brew install python3.6
   - pip install tox
   # We're not actually installing Tox, but have to run it before we install wxPython via Conda. This is fugly but vOv
   - tox
-  - pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk2/ubuntu-14.04 wxPython==4.0.0b2
+  - pip install --disable-pip-version-check --user --upgrade pip
+  - pip install -r requirements.txt
+  - pip install PyInstaller
 #  # get Conda
 #  - if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
 #      wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
