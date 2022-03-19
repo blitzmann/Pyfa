@@ -10,7 +10,7 @@ for:
       only:
         - image: Ubuntu1604
     environment:
-      APPVEYOR_SSH_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmw4lk8SY0iQ0v0Xql+Sb4YLYLMJejyyLDpqCtvEQjvPGlsSYYjeuF7IzsD4dPOw95cIqgUOLAIw1P7LPmgRqr78cn0gzcV6TWaCgldXwWggkkayWz/4E6cYBLzncMg2Qkr8XZZGy6ThBvi1AqMulC9+a7InAAhshvrKvTnJyee4Ek/0MDVJsIkKKK7laPbWd7Ll1DqlrB8Lf3XJG9rYY5BNMES7CgwylmfaVK5eAofBn2U4Wa35tNTZKdkfzx2NPFAdiTVgPXSf+j29f8kpb+73i864KcxYRioLOUEB+dkBzigNaQK3XDiFbMA2F7B3sXLRq2i2sIezVXdZSsauUn holme@WIN-RQIHHG1T12Q"
+      APPVEYOR_SSH_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJDW/+oYNGOiPvwuwAL9tc/LQgg58aosIVpMYfepQZ20V+VZnHpZh8IRDA8Jo5xht19p2PksA+hFgqA0kpKtrSkuiWdE8rATQItfk4gf7yB0yGasJGGQZYazy9k/9XtmYkq2HHOOeEqdxvrICddJQ88MLCLT9lJENSUP/YS/yGcjZFXVxE11pTeIcqlCRU+3eYa1v7BeNvXIKNhZoK5orXWrtuH3cy8jrSns/u70aYfJ6B2jA8CnWnDbuvpeQtEY61SQqlKUsSArNa8NAsXj41wr3Ar9gAG9330w7EMTqlutk8HZO35uHI0q5qinUhaQYufPPrVkb2L/N+ZCfu0fnh appveyor"
       APPVEYOR_SSH_BLOCK: true
     init:
       - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
