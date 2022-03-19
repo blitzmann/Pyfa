@@ -27,7 +27,7 @@ $(EVE_DB): $(PYFA_DIR)/eos $(PYFA_DIR)/db_update.py deps
 
 .PHONY: deps
 deps: $(DEPLOY_DIR) $(PYFA_DIR)/requirements.txt 
-	AppDir/usr/bin/python -s -m pip install -U pip setuptools wheel
+	AppDir/usr/bin/python -s -m pip install -U pip setuptools==41.6.0 wheel pathlib2
 	AppDir/usr/bin/python -s -m pip install -r $(PYFA_DIR)/requirements.txt
 
 .PHONY: static
