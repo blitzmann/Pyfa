@@ -1,9 +1,19 @@
 image:
-  - Visual Studio 2019
-  - macos
+#  - Visual Studio 2019
+#  - macos
+  - Ubuntu1604
 clone_depth: 400
 
 for:
+  - matrix:
+        only:
+          - image: Ubuntu1604
+      environment:
+        APPVEYOR_SSH_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmw4lk8SY0iQ0v0Xql+Sb4YLYLMJejyyLDpqCtvEQjvPGlsSYYjeuF7IzsD4dPOw95cIqgUOLAIw1P7LPmgRqr78cn0gzcV6TWaCgldXwWggkkayWz/4E6cYBLzncMg2Qkr8XZZGy6ThBvi1AqMulC9+a7InAAhshvrKvTnJyee4Ek/0MDVJsIkKKK7laPbWd7Ll1DqlrB8Lf3XJG9rYY5BNMES7CgwylmfaVK5eAofBn2U4Wa35tNTZKdkfzx2NPFAdiTVgPXSf+j29f8kpb+73i864KcxYRioLOUEB+dkBzigNaQK3XDiFbMA2F7B3sXLRq2i2sIezVXdZSsauUn holme@WIN-RQIHHG1T12Q"
+        APPVEYOR_SSH_BLOCK: true
+      init:
+        - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
+
   -
     matrix:
       only:
