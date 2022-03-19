@@ -2,7 +2,7 @@ APPIMAGETOOL:=appimagetool-x86_64.AppImage
 APPIMAGETOOL_URL:=https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage
 
 PYTHON_APPIMAGE=python3.7.12-cp37-cp37m-manylinux2014_x86_64.AppImage
-PYTHON_APPIMAGE_URL=https://github.com/niess/python-appimage/releases/download/python3.8/$(PYTHON_APPIMAGE)
+PYTHON_APPIMAGE_URL=https://github.com/niess/python-appimage/releases/download/python3.7/$(PYTHON_APPIMAGE)
 
 DEPLOY_DIR=AppDir/opt/pyfa
 
