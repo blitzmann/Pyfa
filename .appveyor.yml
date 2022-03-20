@@ -14,7 +14,7 @@ for:
     init:
       - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
     cache:
-      - ~/.cache/pip
+      - /home/appveyor/.cache/pip
     install:
       - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
 #      - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
