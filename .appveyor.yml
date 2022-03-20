@@ -2,7 +2,7 @@ image:
   - Ubuntu
   - Visual Studio 2019
   - macos
-clone_depth: 1
+clone_depth: 400
 
 for:
   -
