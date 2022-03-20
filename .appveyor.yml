@@ -14,7 +14,7 @@ for:
     init:
       - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
     cache:
-      - ~/.cache/pip -> requirements.txt
+      - /home/appveyor/.cache/pip -> requirements.txt
     install:
       - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
 #      - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
@@ -30,7 +30,7 @@ for:
     after_build:
       - sh: ls -la
     artifacts:
-      - path: Pyfa*.AppImage
+      - path: ./Pyfa-x86_64.AppImage
   -
     matrix:
       only:
