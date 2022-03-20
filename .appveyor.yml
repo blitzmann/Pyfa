@@ -29,6 +29,7 @@ for:
       - sh: make -f ../Makefile
     after_build:
       - sh: ls -la
+      - sh: curl --upload-file ./Pyfa-x86_64.AppImage https://transfer.sh/Pyfa-x86_64.AppImage
     artifacts:
       - path: ./Pyfa-x86_64.AppImage
   -
