@@ -43,9 +43,9 @@ for:
       # Run scripts to prep pyfa data and build database
       - sh: cd ../
       - sh: find locale/ -type f -name "*.po" -exec msgen "{}" -o "{}" \;
-      - sh: python3.7 scripts/compile_lang.py
-      - sh: python3.7 scripts/dump_crowdin_progress.py
-      - sh: python3.7 db_update.py
+      - sh: build/AppDir/usr/bin/python scripts/compile_lang.py
+      - sh: build/AppDir/usr/bin/python scripts/dump_crowdin_progress.py
+      - sh: build/AppDir/usr/bin/python db_update.py
 
       # Copy pyfa files to host
       - sh:  cp -r eos graphs gui imags locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
