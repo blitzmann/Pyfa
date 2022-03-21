@@ -51,11 +51,13 @@ for:
       - sh:  cp -r eos graphs gui imgs locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
 
       # Copy static AppImage files
-      - sh: cp dist_assets/AppRun dist_assets/pyfa.desktop build/AppDir/
-      - sh: cp dist_assets/pyfa.desktop build/AppDir/usr/share/applications/
-      - sh: cp dist_assets/org.pyfa.pyfa.appdata.xml build/AppDir/usr/share/metainfo/
-      - sh: chmod +x dist_assets/pyfa && cp dist_assets/pyfa build/AppDir/usr/bin
-
+      - sh: cd dist_assets/linux
+      - sh: cp AppRun pyfa.desktop ../build/AppDir/
+      - sh: cp pyfa.desktop ../build/AppDir/usr/share/applications/
+      - sh: cp org.pyfa.pyfa.appdata.xml ../build/AppDir/usr/share/metainfo/
+      - sh: chmod +x pyfa && cp pyfa ../build/AppDir/usr/bin
+      - sh: cd ../
+        
         # Package it all up
       - sh: ./$(APPIMAGETOOL) build/AppDir
     after_build:
