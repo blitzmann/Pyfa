@@ -52,12 +52,12 @@ for:
 
       # Copy static AppImage files
       - sh: cd dist_assets/linux
-      - sh: cp AppRun pyfa.desktop ../build/AppDir/
-      - sh: cp pyfa.desktop ../build/AppDir/usr/share/applications/
-      - sh: cp org.pyfa.pyfa.appdata.xml ../build/AppDir/usr/share/metainfo/
-      - sh: chmod +x pyfa && cp pyfa ../build/AppDir/usr/bin
-      - sh: cd ../
-        
+      - sh: cp AppRun pyfa.desktop ../../build/AppDir/
+      - sh: cp pyfa.desktop ../../build/AppDir/usr/share/applications/
+      - sh: cp org.pyfa.pyfa.appdata.xml ../../build/AppDir/usr/share/metainfo/
+      - sh: chmod +x pyfa && cp pyfa ../../build/AppDir/usr/bin
+      - sh: cd ../../
+
         # Package it all up
       - sh: ./$(APPIMAGETOOL) build/AppDir
     after_build:
