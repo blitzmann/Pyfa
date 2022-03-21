@@ -48,7 +48,7 @@ for:
       - sh: build/AppDir/usr/bin/python db_update.py
 
       # Copy pyfa files to host
-      - sh:  cp -r eos graphs gui imags locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
+      - sh:  cp -r eos graphs gui imgs locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
 
       # Copy static AppImage files
       - sh: cp dist_assets/AppRun dist_assets/pyfa.desktop build/AppDir/
