@@ -59,7 +59,7 @@ for:
       - sh: cd ../../
 
         # Package it all up
-      - sh: ./$APPIMAGETOOL build/AppDir
+      - sh: ./$APPIMAGE_TOOL build/AppDir
     after_build:
       - sh: ls -la build
     artifacts:
