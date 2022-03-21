@@ -26,7 +26,7 @@ for:
       - sh: mkdir build
       - sh: cd build
     build_script:
-      - sh: find locale/ -type f -name "*.po" -exec msgen "{}" -o "{}" \;
+      - sh: find ../../locale/ -type f -name "*.po" -exec msgen "{}" -o "{}" \;
       - sh: make -f ../Makefile
     after_build:
       - sh: ls -la
