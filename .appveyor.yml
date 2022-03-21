@@ -15,7 +15,7 @@ for:
     cache:
       - /home/appveyor/.cache/pip -> requirements.txt
     install:
-      - sh: git fetch --prune --unshallow # to fix the version dump issues
+      - cmd: "git fetch --prune --unshallow" # to fix the version dump issues
       - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
       - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y update
 #      - sh: sudo DEBIAN_FRONTEND=noninteractive apt-get -y install software-properties-common
