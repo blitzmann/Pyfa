@@ -46,7 +46,7 @@ for:
       - sh: build/AppDir/usr/bin/python scripts/compile_lang.py
       - sh: build/AppDir/usr/bin/python scripts/dump_crowdin_progress.py
       - sh: build/AppDir/usr/bin/python db_update.py
-      - sh: export PYFA_VERSION="$(python3.7 dump_version.py)"
+      - sh: export PYFA_VERSION="$(python3.7 scripts/dump_version.py)"
 
       # Copy pyfa files to host
       - sh:  cp -r eos graphs gui imgs locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
