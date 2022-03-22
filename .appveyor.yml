@@ -46,6 +46,7 @@ for:
       - sh: build/AppDir/usr/bin/python scripts/compile_lang.py
       - sh: build/AppDir/usr/bin/python scripts/dump_crowdin_progress.py
       - sh: build/AppDir/usr/bin/python db_update.py
+      - sh: export PYFA_VERSION="$(python3.7 dump_version.py)"
 
       # Copy pyfa files to host
       - sh:  cp -r eos graphs gui imgs locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
@@ -59,11 +60,23 @@ for:
       - sh: cd ../../
 
         # Package it all up
-      - sh: ./build/$APPIMAGE_TOOL build/AppDir
+      - sh: ./build/$APPIMAGE_TOOL build/AppDir dist/pyfa-$PYFA_VERSION-linux.AppImage
     after_build:
       - sh: ls -la build
     artifacts:
-      - path: build/Pyfa-x86_64.AppImage
+      - path: dist/pyfa-$PYFA_VERSION-linux.AppImage
+    deploy:
+      tag: $PYFA_VERSION
+      release: pyfa $PYFA_VERSION
+      description: 'Release description'
+      provider: GitHub
+      auth_token:
+        secure: M94o0xMtzxrvlKpqMcXU2KfbJdd3aYJ3UxWzePUz/pkT1/Ojiis052CiLsLVyzJg
+      draft: true
+      force_update: false
+      # deploy on tag push only
+      on:
+        APPVEYOR_REPO_TAG: true
   -
     matrix:
       only:
