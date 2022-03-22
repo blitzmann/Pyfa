@@ -60,6 +60,7 @@ for:
       - sh: cd ../../
 
         # Package it all up
+      - sh: mkdir dist
       - sh: ./build/$APPIMAGE_TOOL build/AppDir dist/pyfa-$PYFA_VERSION-linux.AppImage
     after_build:
       - sh: ls -la build
