@@ -49,7 +49,7 @@ for:
       - sh: export PYFA_VERSION="$(python3.7 scripts/dump_version.py)"
 
       # Copy pyfa files to host
-      - sh:  cp -r eos graphs gui imgs locale service utils config.py pyfa.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
+      - sh:  cp -r eos graphs gui imgs locale service utils eve.db config.py pyfa.py db_update.py README.md LICENSE version.yml ./build/$DEPLOY_DIR
 
       # Copy static AppImage files
       - sh: cd dist_assets/linux
