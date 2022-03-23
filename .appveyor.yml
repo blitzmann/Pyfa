@@ -88,6 +88,8 @@ for:
     # Should be enabled only for build process debugging
     # init:
     #   - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+    cache:
+      - C:\users\appveyor\appdata\local\pip\cache\ -> requirements.txt
     install:
       - cmd: git fetch --prune --unshallow # to fix the version dump issues
 
@@ -130,7 +132,6 @@ for:
       - cmd: "python -m pip install pathlib2"
       - cmd: "python -m pip install -r requirements.txt"
       - cmd: "python -m pip install PyInstaller==3.6"
-      - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     before_build:
         # directory that will contain the built files
       - ps: $env:PYFA_DIST_DIR = "c:\projects\$env:APPVEYOR_PROJECT_SLUG\dist"
