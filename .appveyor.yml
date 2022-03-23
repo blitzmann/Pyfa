@@ -176,6 +176,8 @@ for:
       only:
         - image: macos
     # Should be enabled only for build process debugging
+    cache:
+      - /Users/appveyor/Library/Caches/pip/ -> requirements.txt
     init:
     #   - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
       - sh: source ~/venv3.7/bin/activate
