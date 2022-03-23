@@ -130,7 +130,7 @@ for:
       - cmd: "python -m pip install pathlib2"
       - cmd: "python -m pip install -r requirements.txt"
       - cmd: "python -m pip install PyInstaller==3.6"
-      - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+      - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
     before_build:
         # directory that will contain the built files
       - ps: $env:PYFA_DIST_DIR = "c:\projects\$env:APPVEYOR_PROJECT_SLUG\dist"
