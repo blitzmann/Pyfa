@@ -195,6 +195,9 @@ for:
     before_deploy:
       - sh: export RELEASE_PKG_FILE=$(ls *.deb)
       - sh: echo "deploying $RELEASE_PKG_FILE to GitHub releases"
+    on_finish:
+      - sh: export APPVEYOR_SSH_BLOCK=true
+      - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
     deploy:
       tag: $PYFA_VERSION
       release: pyfa $PYFA_VERSION
